@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MockAPI Products</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3f7ff;
+        padding: 20px;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #products {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        transition: 0.3s;
+        border-left: 6px solid #4a7cff;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .name {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .category {
+        color: #4a7cff;
+        font-weight: bold;
+    }
+
+    button {
+        padding: 10px 20px;
+        background: #4a7cff;
+        border: none;
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 25px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    button:hover {
+        background: #2f5de0;
+    }
+
+    #stats {
+        margin-top: 25px;
+        font-size: 18px;
+        text-align: center;
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        width: 350px;
+        margin-left: auto;
+        margin-right: auto;
+        display: none;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+</style>
+</head>
+<body>
+
+<h1>Products from MockAPI</h1>
+
+<div id="products">Loading...</div>
+
+<button id="showStats">ფასების სტატისტიკა</button>
+
+<div id="stats"></div>
+
+<script>
+// MockAPI URL (შენი საკუთარი ლინკი ჩასვი აქ)
+const API_URL = "https://65e5c8b9d7f0758a76e7bb11.mockapi.io/products";
+
+async function loadProducts() {
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("ვერ მოხერხდა fetch");
+
+        const data = await response.json();
+
+        // Set უნიკალური კატეგორიებისთვის
+        const categories = new Set(data.map(p => p.category));
+        console.log("უნიკალური კატეგორიები:", [...categories]);
+
+        displayProducts(data);
+        setupStatsButton(data);
+
+    } catch (error) {
+        document.getElementById("products").innerHTML = "შეცდომა დატვირთვისას ❌";
+        console.error(error);
+    }
+}
+
+function displayProducts(products) {
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+
+    products.forEach(p => {
+        container.innerHTML += `
+            <div class="card">
+                <div class="name">${p.name} ${p.isVegetarian ? "🌱" : ""}</div>
+                <div>ფასი: <b>${p.price} ₾</b></div>
+                <div class="category">${p.category}</div>
+            </div>
+        `;
+    });
+}
+
+function setupStatsButton(products) {
+    document.getElementById("showStats").addEventListener("click", () => {
+        const cheapest = products.reduce((a,b) => a.price < b.price ? a : b);
+        const expensive = products.reduce((a,b) => a.price > b.price ? a : b);
+        const avg = (products.reduce((s, p) => s + Number(p.price), 0) / products.length).toFixed(2);
+
+        const statsDiv = document.getElementById("stats");
+        statsDiv.style.display = "block";
+        statsDiv.innerHTML = `
+            <p><b>ყველაზე იაფი:</b> ${cheapest.name} - ${cheapest.price} ₾</p>
+            <p><b>ყველაზე ძვირი:</b> ${expensive.name} - ${expensive.price} ₾</p>
+            <p><b>საშუალო ფასი:</b> ${avg} ₾</p>
+        `;
+    });
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>

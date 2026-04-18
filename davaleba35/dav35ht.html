@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <title>საახალწლო სურვილების ყუთი 🎁</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #ff6f61;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e85a4f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🎄 საახალწლო სურვილი 🎁</h2>
+
+    <input type="text" id="name" placeholder="შენი სახელი">
+    <input type="text" id="wish" placeholder="შენი სურვილი">
+
+    <button id="sendBtn">გაგზავნა</button>
+</div>
+
+<script>
+    const nameInput = document.getElementById("name");
+    const wishInput = document.getElementById("wish");
+    const sendBtn = document.getElementById("sendBtn");
+
+
+    const savedName = localStorage.getItem("savedName");
+    if (savedName) {
+        nameInput.value = savedName;
+    }
+
+    sendBtn.addEventListener("click", () => {
+        const name = nameInput.value;
+        const wish = wishInput.value;
+
+        if (name === "" || wish === "") {
+            alert("გთხოვ შეავსე ორივე ველი");
+            return;
+        }
+
+        
+        localStorage.setItem("savedName", name);
+
+    
+        fetch("https://YOUR_MOCKAPI_LINK.mockapi.io/wishes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                wish: wish
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("სურვილი წარმატებით გაიგზავნა 🎉");
+            wishInput.value = "";
+        })
+        .catch(error => {
+            console.error(error);
+            alert("დაფიქსირდა შეცდომა");
+        });
+    });
+</script>
+
+</body>
+</html>

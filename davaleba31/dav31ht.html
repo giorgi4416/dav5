@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>მონაცემების ჩატვირთვა</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding-top: 60px;
+    }
+
+    button {
+      background-color: #0078D7;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    #user-info {
+      margin-top: 25px;
+      background: white;
+      padding: 20px;
+      width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+
+    p {
+      text-align: left;
+      font-size: 15px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="load-user-btn">მონაცემების ჩატვირთვა</button>
+  <div id="user-info"></div>
+
+  <script>
+    // იდენტიფიცირება ელემენტების
+    const button = document.getElementById('load-user-btn');
+    const userInfo = document.getElementById('user-info');
+
+    // ღილაკზე დაჭერის ივენთი
+    button.addEventListener('click', () => {
+      userInfo.innerHTML = '<p>მონაცემების ჩატვირთვა მიმდინარეობს...</p>';
+
+      // Fetch მოთხოვნა სერვერზე
+      fetch('https://jsonplaceholder.typicode.com/users/1')
+        .then(response => response.json())
+        .then(user => {
+          userInfo.innerHTML = `
+            <h3>მომხმარებლის ინფორმაცია</h3>
+            <p><strong>სახელი:</strong> ${user.name}</p>
+            <p><strong>იმეილი:</strong> ${user.email}</p>
+            <p><strong>ტელეფონი:</strong> ${user.phone}</p>
+            <p><strong>ქალაქი:</strong> ${user.address.city}</p>
+          `;
+        })
+        .catch(error => {
+          userInfo.innerHTML = '<p style="color:red;">შეცდომა მოხდა მონაცემების ჩატვირთვისას 😢</p>';
+          console.error(error);
+        });
+    });
+  </script>
+
+</body>
+</html>

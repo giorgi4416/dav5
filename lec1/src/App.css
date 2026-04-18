@@ -1,0 +1,29 @@
+*{
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  
+}
+
+
+
+.bluetest{
+  font-size: 24px;
+  color: blue;
+}
+
+header{
+
+  width: 100%;
+  height: 50px;
+  padding: 10px 20px;
+  background-color: blue;
+}
+
+
+
+header ul {
+  display: flex;
+}
+

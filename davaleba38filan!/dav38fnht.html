@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<title>ჩემი ონლაინ მაღაზია</title>
+
+<style>
+/* ზოგადი სტილი — გამოიყენეთ მარტივი margin/padding */
+body {
+    margin: 20px; 
+    font-family: Arial, sans-serif;
+}
+
+
+
+
+
+
+
+
+h1 {
+    text-align: center;
+}
+
+/* მთავარი ღილაკი — მოთხოვნის მიხედვით padding:10px */
+#loadBtn {
+    padding: 10px; 
+    display: block;
+    margin: 10px auto; 
+}
+
+/* სექციებს შორის ხაზები და მცირე დაშორება */
+section {
+    margin-bottom: 20px;
+}
+
+
+
+#slider {
+    text-align: center;
+    margin: 0 auto 10px auto;
+}
+#slider img {
+    width: 300px; 
+    height: 200px; 
+    object-fit: cover;
+    border: 1px solid #ccc; 
+    display: inline-block;
+}
+
+/* სლაიდერის ღილაკები */
+.slider-btn {
+    padding: 6px 10px;
+    margin: 0 8px;
+    cursor: pointer;
+}
+
+/* ფორმის ყუთი */
+#addFormBox {
+    background: #efefef; 
+    padding: 12px;
+    width: 320px;
+    margin: 0 auto 10px auto;
+    border-radius: 6px;
+}
+
+/* ფორმის input-ები თანმიმდევრობით ახალ ხაზზე */
+#addFormBox input {
+    display: block; /* ახალი ხაზი */
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+
+#addBtn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+
+
+
+
+table {
+    border-collapse: collapse;
+    margin: 20px auto; 
+}
+
+
+table, th, td {
+    border: 1px solid #000; 
+}
+
+
+th, td {
+    padding: 5px; 
+    text-align: left;
+}
+
+
+
+
+.edit-btn {
+    padding: 4px 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+
+
+#pagination {
+    text-align: center;
+    margin-top: 8px;
+}
+.page-btn {
+    padding: 6px 10px;
+    margin: 0 6px; 
+    cursor: pointer;
+}
+
+/* მცირე რიცხვის ტექსტი გვერდზე */
+#pageInfo {
+    display: inline-block;
+    margin: 0 6px;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ნაწილი 1: სატაური + ღილაკი -->
+<section>
+    <h1>ჩემი ონლაინ მაღაზია</h1> <!-- მოთხოვნილი h1 -->
+    <button id="loadBtn" onclick="loadProducts()">პროდუქტების ჩატვირთვა</button> <!-- padding:10px -->
+</section>
+
+<hr>
+
+<!-- ნაწილი 3: სლაიდერი (ცხრილის ზემოტ) -->
+<section id="sliderSection">
+    <div id="slider">
+        <button class="slider-btn" onclick="prevImage()">&lt;</button> <!-- უკან ღილაკი -->
+        <img id="sliderImg" src="" alt="პროდუქტის სურათი"> <!-- fixed size -->
+        <button class="slider-btn" onclick="nextImage()">&gt;</button> <!-- წინ ღილაკი -->
+    </div>
+</section>
+
+<hr>
+
+<!-- ნაწილი 5: დამატების ფორმა -->
+<section>
+    <div id="addFormBox">
+        <!-- კონტეინერი როგორც ცალკე "ყუთი" -->
+        <label>პროდუქტის სახელი</label>
+        <input type="text" id="newTitle" placeholder="შეიყვანე სახელი"> <!-- placeholder -->
+        <label>ფასი</label>
+        <input type="number" id="newPrice" placeholder="შეიყვანე ფასი"> <!-- placeholder -->
+        <button id="addBtn" onclick="addProduct()">დამატება</button>
+    </div>
+</section>
+
+<hr>
+
+<!-- ნაწილი 2: ცხრილი (Data Table) -->
+<section>
+    <!-- მოთხოვნა: table აუცილებლად border="1" ცხრილის ჩარჩოს სისქე 1 პიქსელი რა -->
+    <table id="productsTable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>დასახელება</th>
+                <th>ფასი</th>
+                <th>მოქმედება</th> <!-- ეს იქნება Edit ღილაკი 6-ე დავალებისთვის -->
+            </tr>
+        </thead>
+        <tbody id="productsTbody">
+            <!-- აქ JS-ით შევიტანთ რენდერს ნიშნავს ამ მონაცემების გადატანას HTML-ში ანუ ტაგების შექმნას ტექსტის ჩაწერას, უჯრების და რიგების აწყობას. -->
+        </tbody>
+    </table>
+
+    <!-- ნაჭილი 4: Pagination -->
+    <div id="pagination">
+        <button class="page-btn" onclick="prevPage()">Prev</button>
+        <span id="pageInfo">გვერდი: 1</span>
+        <button class="page-btn" onclick="nextPage()">Next</button>
+    </div>
+</section>
+
+<hr>
+
+<!-- ადგილი დინამიური შეტყობინებებისთვის -->
+<section>
+    <div id="result" style="text-align:center;"></div> <!-- აქ ვაჩვენებთ სტატუსს (მონაცემების რაოდენობა და ასე შედეგ) -->
+</section>
+
+<script>
+//  მონაცემები და კონფიგურაცია 
+let products = []; // აქ ინახება ყველა პროდუქტი ადგილობრივად // ამ მასივით ვმარტავთ ცხრილს რედაქტირებადობას და pagination
+let currentPage = 1; // pagination-ის მიმდინარე გვერდი
+const pageSize = 5; // თითო გვერდზე რამდენი პროდუქტია (შეკითხების მიხედვით 5)
+let currentSliderImages = []; // ამ მასივში არის მიმდინარე სლაიდერის სურათები
+let currentSliderIndex = 0; // სლაიდერის მიმდინარე ინდექსი
+
+// ნაწილი 1: მონაცემების წამოღება (GET Method)
+function loadProducts() { // ღილაკის ან ავტომატიკის დროს იძახება
+    document.getElementById('result').innerText = 'ჩატვირთვა...'; // მოკლე სტატუსი
+    fetch("https://fakestoreapi.com/products") // GET მოთხოვნა API-ზე
+        .then(response => response.json()) // მიღებული პასუხი გადააქციე JSON ფორმათში
+        .then(data => {
+            // products მასივში შენახვა — დავიწყებით დღეს არსებული მონაცემებით
+            products = data.map(item => {
+                return {
+                    id: item.id, // API-ს ID
+                    title: item.title, // დასახელება
+                    price: item.price, // ფასი
+                    images: item.images ? item.images : (item.image ? [item.image] : [] ) // თუ API-ს აქვს images ცვლა, თუ არა – single image
+                };
+            });
+
+            // თუ products ცარიელია ამონტაჟე ცარიელი ნიმუში
+            if (products.length === 0) {
+                products = [{ id: 1, title: 'უსახელო პროდუქტი', price: 0, images: [] }];
+            }
+
+            currentPage = 1; // გადავამოწმებთ pagination-ის სთარტს
+            renderTable(); // რენდერი ცხრილის
+            setupSliderForIndex(0); // სლაიდერი თავიდან პირველ პროდუქტისთვის
+            document.getElementById('result').innerText = 'მიღებულია ' + products.length + ' პროდუქტი'; // სტატუსი
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('result').innerText = 'ჩატვირთვა დასრულდა შეცდომით'; // შეცდომის შეტყობინება
+        });
+}
+
+// renderTable — ცხრილის აგება და pagination-ის გამოყენება 
+function renderTable() {
+    const tbody = document.getElementById('productsTbody');
+    tbody.innerHTML = ''; // გასუფთავება
+
+    // pagination: იანგარიშე მოვლენები currentPage და pageSize-ით
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    const pageItems = products.slice(start, end); // ამ გვერდზე მოდის ეს ელემენტები
+
+    pageItems.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+
+        // ID
+        const tdId = document.createElement('td');
+        tdId.innerText = p.id; // ID
+        tr.appendChild(tdId);
+
+        // Title
+        const tdTitle = document.createElement('td');
+        tdTitle.innerText = p.title; // დასახელება
+        // row-ზე კლიკით შეიძლება სლაიდერში ამ პროდუქტის სურათების ჩვენება
+        tdTitle.onclick = () => { // ვაძლევitamos row click ფუნქციას, რათა სლაიდერი შეცვალოს
+            const globalIndex = start + idx;
+            setupSliderForIndex(globalIndex); // სლაიდერის განახლება
+        };
+        tr.appendChild(tdTitle);
+
+        // Price
+        const tdPrice = document.createElement('td');
+        tdPrice.innerText = p.price + ' $'; // ფასი
+        tr.appendChild(tdPrice);
+
+        // Action (Edit)
+        const tdAction = document.createElement('td');
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-btn';
+        editBtn.innerText = 'Edit'; // პატარა ღილაკი "Edit"
+        editBtn.onclick = () => editProduct(start + idx); // გადაეცემა სრული მასივის ინდექსი
+        tdAction.appendChild(editBtn);
+        tr.appendChild(tdAction);
+
+        tbody.appendChild(tr);
+    });
+
+    // განაახლე გვერდის ინფო
+    const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
+    document.getElementById('pageInfo').innerText = 'გვერდი: ' + currentPage + ' / ' + totalPages;
+}
+
+// Pagination ფუნქციები 
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+    }
+}
+function nextPage() {
+    const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
+    if (currentPage < totalPages) {
+        currentPage++;
+        renderTable();
+    }
+}
+
+// ნაწილი 3: Slider ფუნქციონალი 
+function setupSliderForIndex(globalIndex) { // სლაიდერისთვის ვაცნობ რომელ პროდუქტი გამოვიყენოთ
+    if (!products[globalIndex]) {
+        currentSliderImages = [];
+        currentSliderIndex = 0;
+        document.getElementById('sliderImg').src = ''; // თუ არ არსებობს პროდუქტი
+        return;
+    }
+    currentSliderImages = products[globalIndex].images.length ? products[globalIndex].images : (products[globalIndex].images.length === 0 && products[globalIndex].images !== undefined ? products[globalIndex].images : []);
+    // თუ images ცარიელი ან undefined, ვცდილობთ single image fallback — პროდუქტის images უკვე ნაპოვნია loadProducts-ში
+    if (currentSliderImages.length === 0) {
+        // თუ მაინც ვერ ქონია სურათი, სატვირთავი სურათი (placeholder) ან ცარიელი ქმედება
+        document.getElementById('sliderImg').src = '';
+        currentSliderIndex = 0;
+    } else {
+        currentSliderIndex = 0;
+        document.getElementById('sliderImg').src = currentSliderImages[currentSliderIndex]; // გადმოწერე პირველი სურათი
+    }
+}
+function prevImage() {
+    if (currentSliderImages.length === 0) return;
+    currentSliderIndex = (currentSliderIndex - 1 + currentSliderImages.length) % currentSliderImages.length;
+    document.getElementById('sliderImg').src = currentSliderImages[currentSliderIndex];
+}
+function nextImage() {
+    if (currentSliderImages.length === 0) return;
+    currentSliderIndex = (currentSliderIndex + 1) % currentSliderImages.length;
+    document.getElementById('sliderImg').src = currentSliderImages[currentSliderIndex];
+}
+
+//  ნაწილი 5: ახალი პროდუქტის დამატება 
+function addProduct() {
+    // ვკითხულობთ ველების მნიშვნელობას
+    const title = document.getElementById('newTitle').value.trim(); // ფორმის ველი 1
+    const priceValue = document.getElementById('newPrice').value; // ფორმის ველი 2
+    const price = priceValue ? Number(priceValue) : 0;
+
+    if (!title) {
+        alert('გთხოვთ შეიყვანოთ პროდუქტის სახელი'); // მარტივი ვალიდაცია
+        return;
+    }
+
+    // ახალი ID — შევქმნით ადგილობრივ თანმიმდევრულ ID-ს (იმ შემთხვევაში თუ API-ს ID არ არის უნიკალური)
+    const maxId = products.reduce((acc, p) => Math.max(acc, p.id || 0), 0);
+    const newId = maxId + 1;
+
+    // ყველა ახალი ნივთი ჩაიტვირთება images = [] (ან შესაძლებელია მომხმარებელმა მოგვაწოდოს ბმულები — ეხლა წართმევად)
+    const newProduct = { id: newId, title: title, price: price, images: [] };
+
+    // products მასივში დამატება
+    products.push(newProduct);
+
+    // გადავა ბოლო გვერდზე სადაც ეს ელემენტიაა, თუ საჭიროა
+    const totalPages = Math.ceil(products.length / pageSize);  // ეს / ნიშნავს
+    currentPage = totalPages;
+    renderTable();
+
+    // ცარიელი ველების გასუფთავება
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newPrice').value = '';
+
+    document.getElementById('result').innerText = 'დამატდა ახალი პროდუქტი'; // სტატუსი
+}
+
+// ნაწილი 6: რედაქტირების ღილაკი (Edit) 
+function editProduct(globalIndex) {
+    // globalIndex არის სრული products მასივში ინდექსი (რენდერში გავცემთ start + idx)
+    const p = products[globalIndex];
+    if (!p) return; // ანუ თუ არ არის p
+
+    // prompt-ით ახალი სახელის შეყვანა (უხეში, მაგრამ მარტივი ვიზუალური გზა ბავშვებისთვის)
+    const newName = prompt('შეიცვალე პროდუქტის სახელი:', p.title);
+    if (newName === null) return; // მომხმარებელი დააჭირა Cancel
+    const trimmed = newName.trim();
+    if (trimmed.length === 0) {
+        alert('სახელის ველი ცარიელია'); // მარტივი ვალიდაცია
+        return;
+    }
+
+    // ცვლილების შენახვა და ცხრილის განახლება
+    p.title = trimmed;
+    renderTable();
+    document.getElementById('result').innerText = 'პროდუქტის სახელი შეცვლილია';
+}
+
+// ======= ავტომატური ჩატვირთვა არ ხდება თავიდან — მომხმარებელი დააჭერს ღილაკს.
+// ======= თუ გინდა ავტომატურად გვერდის ჩატვირთვაზე მოიტანა — გამოგვიწერე 'auto' ვარიანტისთვის.
+//document.addEventListener('DOMContentLoaded', loadProducts);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <title>ფილმების სია</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #movie-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            padding: 15px;
+            border-radius: 10px;
+            color: black;
+            background: #ddd;
+            border: 2px solid #999;
+            transition: 0.2s;
+        }
+
+    
+        .hot {
+            background: #ffcccc;
+            border-color: red;
+            box-shadow: 0 0 10px red;
+        }
+
+    
+        .classic {
+            background: #e6e6e6;
+            border-color: #777;
+        }
+ 
+        .high-rating {
+            transform: scale(1.05);
+            animation: glow 1s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px gold; }
+            to { box-shadow: 0 0 15px gold; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>ფილმების სია (MockAPI.io)</h1>
+
+    <button onclick="loadMovies()">ფილმების განახლება</button>
+
+    <div id="movie-list"></div>
+
+<script src="./dav33js.js"></script>
+</body>
+</html>
